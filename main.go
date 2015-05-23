@@ -8,11 +8,10 @@ import (
 )
 
 var (
-	List     = flag.Bool("l", false, "List information about your chat logs")
-	Channel  = flag.String("c", "", "the channel to look for chat logs in")
-	User     = flag.String("u", "", "the user to filter chat logs from")
-	FilterRE = flag.String("fr", "", "A regex string to filter messages that match the given regex string")
-	Filter   = flag.String("f", "", "A string that filters log entries that contain the given string")
+	List    = flag.Bool("l", false, "List information about your chat logs")
+	Channel = flag.String("c", "", "the channel to look for chat logs in")
+	User    = flag.String("u", "", "the user to filter chat logs from")
+	Filter  = flag.String("r", "", "A regex string to filter messages that match the given regex string")
 )
 
 func main() {
@@ -51,32 +50,19 @@ func main() {
 
 	fmt.Printf("Got %v logs\n", len(logs))
 
-	if *FilterRE != "" {
-		if re, err := regexp.Compile(*FilterRE); err == nil {
-			for _, v := range logs {
-				for _, l := range v.Entries {
-					if re.Match([]byte(l.Text)) {
-						if strings.Contains(l.User, *User) {
-							filteredEntries = append(filteredEntries, l)
-						}
-					}
-				}
-			}
-		} else {
-			ReportError("[ERROR] couldn't compile regex [%v]\n", err.Error())
-			return
-		}
-	} else {
+	if re, err := regexp.Compile(*Filter); err == nil {
 		for _, v := range logs {
 			for _, l := range v.Entries {
-				if strings.Contains(l.Text, *Filter) {
-
-					if *User == "" || strings.Contains(l.User, *User) {
+				if re.Match([]byte(l.Text)) {
+					if strings.Contains(l.User, *User) {
 						filteredEntries = append(filteredEntries, l)
 					}
 				}
 			}
 		}
+	} else {
+		ReportError("[ERROR] couldn't compile regex [%v]\n", err.Error())
+		return
 	}
 
 	if filteredEntries == nil || len(filteredEntries) == 0 {
