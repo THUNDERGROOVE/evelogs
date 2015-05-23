@@ -15,18 +15,24 @@ const (
 	timeFmt = "2006.01.02 15:04:05"
 )
 
+// Parser is a struct that contains several things we need to know while parsing
+//
+// It exists so we can keep some state around while calling our internal methods
+// to help us parse
 type Parser struct {
 	file     string
 	curLine  int
 	prevLine string
 }
 
+// NewParserFromFile returns a new *Parser given a filename
 func NewParserFromFile(file string) *Parser {
 	return &Parser{
 		file: file,
 	}
 }
 
+// Parse returns a *Log read from disk
 func (p *Parser) Parse() *Log {
 	out := &Log{}
 	p.curLine = 0
