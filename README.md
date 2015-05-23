@@ -1,6 +1,5 @@
 # evelogs
 
-
 evelogs is a command line utiltiy to query through your EVE online log files.
 
 I wrote it because I grew tired of manually going through my log folder to look for something that was said months ago
