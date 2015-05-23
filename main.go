@@ -1,3 +1,4 @@
+// evelogs is a small command line tool to query your EVE: Online chat logs
 package main
 
 import (
